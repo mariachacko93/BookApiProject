@@ -2,7 +2,7 @@ from rest_framework import serializers
 from books.models import Book,Author
 from books import models
 
-class Authorserializer(serializers.HyperlinkedModelSerializer):
+class Authorserializer(serializers.ModelSerializer):
    
     class Meta:
             model=Author
@@ -15,7 +15,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
                     lookup_field='pk'
                 ) 
 
-    author=Authorserializer(many=True)
+    author=Authorserializer(many=True,read_only=True)
 
     class Meta:
         model=Book
@@ -34,7 +34,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         book.save()
         return book
 
-    def update(self, instance, validated_data):
+    def partial_update(self, instance, validated_data,partial=True):
         author = validated_data.pop('author')
         instance.abstract = validated_data['abstract']
         instance.bookname=validated_data['bookname']
