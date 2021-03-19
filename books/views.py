@@ -40,6 +40,14 @@ class bookDetailView(RetrieveAPIView):
 
     permission_classes=[IsAuthenticated]
 
+# class authordetailsView(RetrieveAPIView):
+#     queryset=Author.objects.all()
+#     serializer_class=AuthorSerializer
+#     authentication_classes=[SessionAuthentication]
+#     authentication_classes=[BasicAuthentication]
+#     authentication_classes=[TokenAuthentication]
+
+
 class bookListView(ListAPIView):
     search_fields=['author__author','bookname']
     filter_backends=(filters.SearchFilter,)
