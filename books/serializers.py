@@ -36,21 +36,39 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     
    
-    def update(self, instance, validated_data):
-        authors_list = []
-        try:
-            author = validated_data.pop('author')
-            for author in author:
-                print(author)
-                author, created = Author.objects.get_or_create(author=author['author'])
-                authors_list.append(author)
-        except:
-            for i in instance.author.all():
-                authors_list.append(i)
-        instance.author.set(authors_list)
+#     def update(self, instance, validated_data):
+#         authors_list = []
+#         try:
+#             author = validated_data.pop('author')
+#             for author in author:
+#                 print(author)
+#                 author, created = Author.objects.get_or_create(author=author['author'])
+#                 authors_list.append(author)
+#         except:
+#             for i in instance.author.all():
+#                 authors_list.append(i)
+#         instance.author.set(authors_list)
+#         instance.bookname = validated_data.get('bookname', instance.bookname)
+#         instance.pubyear=validated_data.get('pubyear', instance.pubyear)
+#         instance.pages = validated_data.get('pages', instance.pages) 
+#         instance.abstract = validated_data.get('abstract', instance.abstract)
+#         instance.save()
+#         return instance
+   
+   
+   
+      def update(self, instance, validated_data):
+        author_data = validated_data.pop('author')
+        author = (instance.author).all()
+        author = list(author)
         instance.bookname = validated_data.get('bookname', instance.bookname)
         instance.pubyear=validated_data.get('pubyear', instance.pubyear)
         instance.pages = validated_data.get('pages', instance.pages) 
         instance.abstract = validated_data.get('abstract', instance.abstract)
         instance.save()
+
+        for author_data in author_data:
+            author = author.pop(0)
+            author.author = author_data.get('author', author.author)
+            author.save()
         return instance
