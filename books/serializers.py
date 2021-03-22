@@ -35,7 +35,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         return book
 
     
-   
+#    using try block
     def update(self, instance, validated_data):
         authors_list = []
         try:
@@ -57,18 +57,26 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
    
    
    
-#       def update(self, instance, validated_data):
-#         author_data = validated_data.pop('author')
-#         author = (instance.author).all()
-#         author = list(author)
-#         instance.bookname = validated_data.get('bookname', instance.bookname)
-#         instance.pubyear=validated_data.get('pubyear', instance.pubyear)
-#         instance.pages = validated_data.get('pages', instance.pages) 
-#         instance.abstract = validated_data.get('abstract', instance.abstract)
-#         instance.save()
+# with if condition
+    def update(self, instance, validated_data):
+        author_data = validated_data.get('author')
+        # author = instance.author.all()
+        # author = list(author)
+        instance.bookname = validated_data.get('bookname', instance.bookname)
+        instance.pubyear=validated_data.get('pubyear', instance.pubyear)
+        instance.pages = validated_data.get('pages', instance.pages) 
+        instance.abstract = validated_data.get('abstract', instance.abstract)
+        instance.save()
 
-#         for author_data in author_data:
-#             author = author.pop(0)
-#             author.author = author_data.get('author', author.author)
-#             author.save()
-#         return instance
+        if author_data:
+            author_list=[]
+            for auth in author_data:
+                author,create = Author.objects.get_or_create(author=auth['author'])
+                author_list.append(author)
+
+            instance.author.set(author_list)
+        instance.save()
+        return instance
+
+    ###################################
+
